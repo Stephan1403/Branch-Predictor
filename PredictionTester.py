@@ -31,9 +31,9 @@ class PredictionTester:
                 self.pht[key] = State()
 
             if state == '0':                                    # No jump
-                self.pht[key]-=1
+                self.pht[key].no_jump()
                 break
-            self.pht[key]+=1                                    # Jump
+            self.pht[key].jump()                                # Jump
             
 
     async def two_level_global_predictor():
