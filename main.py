@@ -1,5 +1,4 @@
 from PredictionTester import PredictionTester
-import requests
 
 if __name__ == "__main__":
 
