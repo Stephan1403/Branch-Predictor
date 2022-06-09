@@ -1,8 +1,10 @@
-#TODO: store precision rate, when was it right
+#TODO: implement for diffrent bit
+#TODO: e.g. change increment method
 
 class State:
     '''State is used to determine wether to jump from a branch.
 
+        :param ``bit``: the bit each state has
         :param ``value``: set a start value from 0 to 3
 
     > State meaining:
@@ -14,7 +16,7 @@ class State:
         - ``Jump:``  adding one but the highest is 3
     '''
 
-    def __init__(self, value = 0) -> None:
+    def __init__(self, bit, value = 0) -> None:
         if value >= 0 and value <=3:
             self.value = value
         else:
