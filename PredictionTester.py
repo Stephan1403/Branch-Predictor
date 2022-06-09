@@ -25,9 +25,11 @@ class PredictionTester:
 
 # Predictors        
     def local_2_bit_predictor(self, address_size=32):                            # TODO: Using async to await the result and show a loading bar in the meantime
-        r'''Test precision of the local 2 Bit predictor
+        r'''Test precision of the local 2 Bit predictor.
         
             :param ``address_size``: set Size of Pattern history table keys in bits (default: 32 bit)
+
+        The Predictor has 2 Bit states for each 
         ''' 
         
         for key, jump in self.branches:
@@ -40,7 +42,7 @@ class PredictionTester:
             self.__update_precision(address, jump)  
 
                                                 
-        print(f"Precision rate: {self.precision_rate*100}%")
+        print(f"Local 2-Bit Predictor\n-{address_size} bit address size\n-------- Precision rate: {self.precision_rate*100}% --------\n")
         
         
     async def two_level_global_predictor():
