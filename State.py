@@ -1,47 +1,69 @@
-#TODO: implement for diffrent bit (use bin instead of hex)
-#TODO: e.g. change increment method
+# TODO: pass starting value
 
 class State:
     '''State is used to predict the next branch (jump or no jump)
 
     Args:
-        :param ``bit``: the size of bit each state has
-        :param ``value``: set a start value from 0 to the hightest possible with n bits
+        :param ``size_bit``: the size of bit each state has
+        :param ``value``: set a start value as decimal (between 0 and highest possible with n bits)
 
-
-    Functions:
-        ????
-
-
-    ---------TODO: redo------
-    > State meaining:
-        - ``0 or 1:`` No jump is expected for this branch the next time
-        - ``2 or 3:``A jump is expected for this branch the next time
-
-    > State changing:
-        - ``no jump:`` subtracting one but the lowest is 0
-        - ``Jump:``  adding one but the highest is 3
+    self.value is a string representing a binary number
     '''
 
-    def __init__(self, bit, value = 0) -> None:
-        self.bit = bit                          # Size of history table
-        if value >= 0 and value <=2**bit-1:     # value has to be between 0 and the highest representative number with n bits
-            self.value = value
+    def __init__(self, size_bit, value = 0) -> None:
+        self.size_bit = size_bit                                                    # Size of history table
+        self.value = "0b" + size_bit * "0"
+
+    def get_val(self, bin=False):
+        r'''return value of state as binary or decimal'''
+        if bin:
+            return self.value
         else:
-            self.value = 0
+            return int(self.value, 2)
+
+
+    def set_val(self, val):
+        r'''Set value of state
+
+            :param ``val``: binary number ("0b101")
+        '''
+        self.value = "0b" + (self.size_bit - len(val) + 2)*"0" + val[2:]
+
 
     def no_jump(self):
-        if(self.value in [1, 2, 3]):
-            self.value-=1
+        r'''decrement value by 1'''
+        if(self.value >= bin(0)):
+            bin_num = bin( int(self.value, 2) - 1 )
+            self.set_val(bin_num)
+
 
     def jump(self):
-        if(self.value in [0, 1, 2]):
-            self.value+=1
+        r'''increment value by 1'''
+        if(self.value < bin(pow(2, self.size_bit)-1) ):                               # smaller than highest number
+            bin_num = bin( int(self.value, 2) + 1 )
+            self.set_val(bin_num)
+
 
     def left_shift(self, x):
         r'''Shift the value to the left using x
         
-            :param ``x``: A bit that is shifted from the right side (0 or 1)
+                :param :char ``x``: A bit that is shifted from the right side (0 or 1) 
+
+            Iterate through value and move all values without the first two (0b)
         '''
+        new_value = "0b"
+        for i in range( len(self.value) ):
+            if(i<=2):
+                continue
+            new_value += self.value[i]
+        new_value += str(x)
+
+        self.value = new_value
 
         
+
+
+
+        
+
+#self.value = bin( int(self.value, 2) + 1 ).zfill(self.size_bit)
