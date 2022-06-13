@@ -16,6 +16,7 @@ class PredictionTester:
 
     def __init__(self, file_path) -> None:
         self.pht = {}                                           # Pattern history table containing states
+        self.ght = State(4)                                     # GLobal history table, has 4 Bit by default
         self.branches = self.__branch_file_to_list(file_path)   # List of tuples with addresses and jumps
 
         self.count = 0                                          # All branches of last predictor             
@@ -39,14 +40,22 @@ class PredictionTester:
 
 
             self.__set_state(address, jump)
-            self.__update_precision(address, jump)  
-
+            self.__update_precision(address, jump)
                                                 
         print(f"Local 2-Bit Predictor\n-{address_size} bit address size\n-------- Precision rate: {self.precision_rate*100}% --------\n")
         
         
-    async def two_level_global_predictor():
-        r'''Test percicion of the two level global predictor'''
+    async def two_level_global_predictor(self, ght_size=4):
+        r'''Test percicion of the two level global predictor
+
+            :param ``ght_size``: size of gloabl history table in bits (default: 4 Bit)
+        
+        '''
+
+        self.ght = State(ght_size)                                  # 4 Bit long Global history table
+        
+        for key, jump in self.branches:
+            pass
 
 
 # Functions
@@ -64,6 +73,7 @@ class PredictionTester:
                 address, jump = b.split(' ')
                 tem_list.append( (address, jump) )
         return tem_list
+
 
     def __set_state(self, address, jump):
         r'''Set state depending on jump value
@@ -87,11 +97,13 @@ class PredictionTester:
             :param ``jump``: Eventaul outcome (jump o. no jump) 
         '''
 
-        state = self.pht[address]
+        state = self.pht[address].get_val()                                # State converted to int value from binary
 
-        if(state.value in [0, 1] and jump == "0"):                                    # Expected prediction: no jump
+        #TODO: split jump and no jump depending on size_bit
+
+        if(state in [0, 1] and jump == "0"):                          # Expected prediction: no jump
             self.correct+=1
-        elif(state.value in [2, 3] and jump == "1"):                                  # Expected prediction: jump
+        elif(state in [2, 3] and jump == "1"):                        # Expected prediction: jump
             self.correct+=1 
 
         self.count+=1
