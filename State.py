@@ -32,14 +32,14 @@ class State:
 
     def no_jump(self):
         r'''decrement value by 1'''
-        if(self.value >= bin(0)):
+        if( self.get_val() != 0 ):                                                    # not zero 
             bin_num = bin( int(self.value, 2) - 1 )
             self.set_val(bin_num)
 
 
     def jump(self):
         r'''increment value by 1'''
-        if(self.value < bin(pow(2, self.size_bit)-1) ):                               # smaller than highest number
+        if( self.get_val() < pow(2, self.size_bit)-1 ):                               # smaller than highest number ( 2^size_bit -1 )
             bin_num = bin( int(self.value, 2) + 1 )
             self.set_val(bin_num)
 
