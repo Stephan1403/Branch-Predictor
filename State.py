@@ -59,7 +59,7 @@ class State:
         new_value += str(x)
 
         self.value = new_value
-
+        return new_value
         
 
 
