@@ -61,10 +61,3 @@ class State:
 
         self.value = new_value
         return new_value
-        
-
-
-
-        
-
-#self.value = bin( int(self.value, 2) + 1 ).zfill(self.size_bit)
