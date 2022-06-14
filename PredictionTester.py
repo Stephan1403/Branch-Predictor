@@ -1,4 +1,5 @@
 from State import State
+from tqdm import tqdm
 
 # TODO: change jump (name) to acutal
 
@@ -36,7 +37,7 @@ class PredictionTester:
             :param ``address_size``: set Size of Pattern history table keys in bits (default: 32 bit)
         ''' 
         
-        for key, actual in self.branches:
+        for key, actual in tqdm(iterable=self.branches, unit='branches' ,colour='green'):
             address = bin(int(key, 16))[-address_size:]         # address: binary value of old hexadecimal branch address
             if address not in self.pht:                         # Create new dictonary entry, if key doesn't exist
                 self.pht[address] = State(2)  
@@ -58,7 +59,7 @@ class PredictionTester:
 
         self.ghr = State(ghr_size)                              # default = 4 Bit long global history register
 
-        for data in self.branches:
+        for data in tqdm(iterable=self.branches, unit='branches' ,colour='green'):
             actual = data[1]                                    # Actual is always the 2nd value of the tuple
             self.ghr.left_shift(actual)                         # Push Actual value (0 or 1) from the right to change ghr value
             
