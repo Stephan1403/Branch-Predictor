@@ -39,12 +39,13 @@ class PredictionTester:
         for key, actual in self.branches:
             address = bin(int(key, 16))[-address_size:]         # address: binary value of old hexadecimal branch address
             if address not in self.pht:                         # Create new dictonary entry, if key doesn't exist
-                self.pht[address] = State(4)     
+                self.pht[address] = State(2)  
 
             self.__update_precision(address, actual)            # Update Precision first
             self.__set_state(address, actual)
                                 
         print(f"Local 2-Bit Predictor\n-{address_size} bit address size\n-------- Precision rate: {self.precision_rate*100}% --------\n")
+        
         
         
     def two_level_global_predictor(self, ghr_size=4):
@@ -71,6 +72,7 @@ class PredictionTester:
         print(f"2-Lvl-Global-Predictor\n-{ghr_size} global history table size\n-------- Precision rate: {self.precision_rate*100}% --------\n")
         
 
+
 # Functions
     def __branch_file_to_list(self, file_path):
         r'''Converts branches inside of file into a list of tuples
@@ -88,13 +90,14 @@ class PredictionTester:
         return tem_list
 
 
+
     def __set_state(self, address, actual):
         r'''Set state of pattern history table depending on current actual value
 
             :param ``address``: pht key to the regarding state
             :param ``actual``: actual jump(1) or no jump(0)
         '''
-        
+
         state = self.pht[address]
 
         if actual == "0":                 # no Jump
@@ -102,6 +105,7 @@ class PredictionTester:
         if actual == "1":                 # Jump
             state.jump()    
      
+
 
     def __update_precision(self, address, actual):
         r'''Calculates the precision rate depending on expected outcome and actual outcome
@@ -113,15 +117,12 @@ class PredictionTester:
         state = self.pht[address].get_val()                           # State converted to int value from binary
 
         #TODO: split jump and no jump depending on size_bit
-
         if(state in [0, 1] and actual == "0"):                          # Expected prediction: no jump
             self.correct+=1
         elif(state in [2, 3] and actual == "1"):                        # Expected prediction: jump
             self.correct+=1
 
         self.count+=1
-        
-
         self.precision_rate = self.correct / self.count
         
         
