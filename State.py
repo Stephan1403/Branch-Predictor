@@ -5,7 +5,7 @@ class State:
 
     Args:
         :param ``size_bit``: the size of bit each state has
-        :param ``value``: set a start value as decimal (between 0 and highest possible with n bits)
+        :param ``value``: set a start value in decimal (between 0 and highest possible with n bits)
 
     self.value is a string representing a binary number
     '''
@@ -13,6 +13,7 @@ class State:
     def __init__(self, size_bit, value = 0) -> None:
         self.size_bit = size_bit                                                    # Size of history table
         self.value = "0b" + size_bit * "0"
+
 
     def get_val(self, bin=False):
         r'''return value of state as binary or decimal'''
@@ -45,7 +46,7 @@ class State:
 
 
     def left_shift(self, x):
-        r'''Shift the value to the left using x
+        r'''Shift the value to the left and push x from the right
         
                 :param :char ``x``: A bit that is shifted from the right side (0 or 1) 
 
