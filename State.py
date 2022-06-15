@@ -48,7 +48,7 @@ class State:
     def left_shift(self, x):
         r'''Shift the value to the left and push x from the right
         
-                :param :char ``x``: A bit that is shifted from the right side (0 or 1) 
+                :param :char(0/1) ``x``: A bit that is shifted from the right side
 
             Iterate through value and move all values without the first two (0b)
         '''
@@ -59,5 +59,5 @@ class State:
             new_value += self.value[i]
         new_value += str(x)
 
-        self.value = new_value
+        self.set_val(new_value)
         return new_value
