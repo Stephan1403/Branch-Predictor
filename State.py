@@ -48,6 +48,7 @@ class State:
             bin_num = bin( int(self.value, 2) + 1 )
             self.set_val(bin_num)
 
+
     def get_jump_val(self):
         r'''Return jump value of state.
         
@@ -55,10 +56,11 @@ class State:
         - Otherwise return ``jump``.
         '''
 
-        if( self.value < pow(2, self.size_bit-1)):    
+        if( self.get_val() < pow(2, self.size_bit-1)):    
             return "no jump"
         else:
             return "jump"
+
 
     def left_shift(self, x):
         r'''Shift the value to the left and push x from the right and return the binary value
@@ -67,6 +69,7 @@ class State:
 
             Iterate through value and move all values without the first two (0b)
         '''
+        
         new_value = "0b"
         for i in range( len(self.value) ):
             if(i<=2):
