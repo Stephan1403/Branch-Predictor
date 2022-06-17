@@ -1,4 +1,3 @@
-# TODO: pass starting value
 
 class State:
     '''State is used to predict the next branch (jump or no jump)
@@ -10,9 +9,14 @@ class State:
     self.value is a string representing a binary number
     '''
 
-    def __init__(self, size_bit, value = 0) -> None:
-        self.size_bit = size_bit                                                    # Size of history table
-        self.value = "0b" + size_bit * "0"
+    def __init__(self, size_bit, value = "0b0") -> None:
+        if size_bit > 2:
+            self.size_bit = size_bit                                                    # Size of history table
+        else:
+            self.size_bit = 2
+
+        self.value = "0b0"
+        self.set_val(value)
 
 
     def get_val(self, bin=False):
@@ -28,7 +32,7 @@ class State:
 
             :param ``val``: binary number ("0b101")
         '''
-        self.value = "0b" + (self.size_bit - len(val) + 2)*"0" + val[2:]
+        self.value = "0b" + (self.size_bit - len(val) + 2)*"0" + val[2:]                # +2 for "0b" which aren't counted for size_bit
 
 
     def no_jump(self):
@@ -44,6 +48,17 @@ class State:
             bin_num = bin( int(self.value, 2) + 1 )
             self.set_val(bin_num)
 
+    def get_jump_val(self):
+        r'''Return jump value of state.
+        
+        - In the lower half of the possible value range (depending on size_bit) return ``no jump``.
+        - Otherwise return ``jump``.
+        '''
+
+        if( self.value < pow(2, self.size_bit-1)):    
+            return "no jump"
+        else:
+            return "jump"
 
     def left_shift(self, x):
         r'''Shift the value to the left and push x from the right and return the binary value
@@ -73,8 +88,6 @@ class State:
         address_str =   bin( int(address, 16) )                         # Convert address to binary
         address_str = "0b" + self.size_bit * '0' + address_str[2:]      # Fill with '0's
         address_str = address_str[-self.size_bit:]                      # Cut the end
-        if address_str != "0b0000":
-            pass
 
         # XOR the cut address with the state value
         xor_address = int(address_str, 2) ^ int(self.value, 2)          # XOR the int values of address and state value
