@@ -44,7 +44,7 @@ class PredictionTester:
         for key, actual in tqdm(iterable=self.branches, unit="branches" ,colour='green'):       # Iterate through branches, Tqdm is used to show the progress bar
             address = bin(int(key, 16))[-address_size:]                                         # Address: binary value of hexadecimal branch address
 
-            self.__update_precision( pht.get_val(address), actual )                             # Check if last prediction was correct
+            self.__update_precision( pht[address].get_jump_val(), actual )                             # Check if last prediction was correct
             self.__set_state( pht[address], actual )                                          
 
 
@@ -69,7 +69,7 @@ class PredictionTester:
 
             # Check for correct prediction
             address = ghr.get_val( bin=True )                                                
-            self.__update_precision( pht[address].get_val(), actual )                 # Compare state at ghr value with 'acutal' value
+            self.__update_precision( pht[address].get_jump_val(), actual )                 # Compare state at ghr value with 'acutal' value
 
 
             # Update state for the next ghr value
@@ -84,7 +84,7 @@ class PredictionTester:
         r'''Test prediction of share predictor
 
         Args:
-            param: ``ghr_size``: Bit size of the global history register
+            :param: ``ghr_size``: Bit size of the global history register
             :param ``state_size``: Bit size of states inside pattern history table
         '''
 
@@ -95,14 +95,18 @@ class PredictionTester:
 
             address = ghr.xor_address(key)   
                                           
-            self.__update_precision( pht[address].get_val(), actual )                 # Compare state at ghr value with 'acutal' value
+            self.__update_precision( pht[address].get_jump_val(), actual )                  # Compare state at ghr value with 'acutal' value
             self.__set_state( pht[address], actual )
 
-            ghr.left_shift( actual )                                                # Update global history register
+            ghr.left_shift( actual )                                                        # Update global history register
 
 
         print(f"G-share-Predictor\n-{ghr_size} global history table size\n-------- Precision rate: {self.precision_rate*100}% --------\n")
 
+
+
+    def tournament_predictor(self):
+        r''''''
 
 
 # Functions
@@ -121,20 +125,20 @@ class PredictionTester:
      
 
 
-    def __update_precision(self, state_val, actual):
+    def __update_precision(self, jump_val, actual):
         r'''Increase the correct_predictions value depending on expected outcome and actual outcome
             
         Args:
-            :param ``state_val``: Value of current state for branch - expected outcome
-            :param ``actual``: Eventual outcome (jump o. no jump)   - acutal outcome
+            :param ``jump_val``: jump value of state ("no jump" or "jump") - expected outcome
+            :param ``actual``: Eventual outcome (0 or 1)                   - acutal outcome
         '''
 
 
         #TODO: split jump and no jump depending on size_bit/ handle in State
-        if(state_val in [0, 1] and actual == "0"):                          # Expected prediction: no jump
+        if(jump_val == "no jump" and actual == "0"):                          # Expected prediction: no jump
             self.correct_predictions+=1
             #print(f"correct at: {self.count+1}, state_val:{state_val}, actual:{actual} -- correct:{self.correct_predictions}")
-        elif(state_val in [2, 3] and actual == "1"):                        # Expected prediction: jump
+        elif(jump_val == "jump" and actual == "1"):                        # Expected prediction: jump
             self.correct_predictions+=1
             #print(f"correct at: {self.count+1}, state_val:{state_val}, actual:{actual} -- correct:{self.correct_predictions}")
         #else:
