@@ -23,9 +23,10 @@ class PredictionTester:
     '''
 
     def __init__(self, file_path) -> None:
-        self.pht = {}
-        self.ghr = State(4)                                     # Global history register, has 4 Bit by default
         self.branches = self.__branch_file_to_list(file_path)   # List of tuples with addresses and actuals
+
+        self.pht = {}
+        self.ghr = State(4)
 
         self.count = 0                                          # All branches of last predictor             
         self.correct_predictions = 0                            # Count of branches which have been right predicted
@@ -60,29 +61,24 @@ class PredictionTester:
             :param ``ghr_size``: size of gloabl history table in bits (default: 4 Bit)
         '''
 
-
-        self.ghr = State(ghr_size)                                                  # Default = 4 Bit long global history register
-        ghr = State(ghr_size)
-        pht = PatternHistoryTable()
+        ghr = State(ghr_size)                        
+        pht = PatternHistoryTable(2)
 
         actuals_list = [data[1] for data in self.branches]
         for actual in tqdm(iterable=actuals_list, unit="branches" ,colour='green'): # Iterate throug all 'actual' values
 
-            #check if prediction is correct
-            address = self.ghr.get_val()
-            state_val = self.pht[address].get_val()
 
-            self.__update_precision(state_val, actual)
-
-
-            #update state for next ghr value
-            new_address = self.ghr.left_shift(actual)
-            state = self.pht[new_address].get_val()
-
-            self.__set_state(state, actual)
+            # Check for correct prediction
+            address = ghr.get_val( bin=True )                                                
+            self.__update_precision( pht.get_val(address), actual )                 # Compare state at ghr value with 'acutal' value
 
 
-        print(f"2-Lvl-Global-Predictor\n-{ghr_size} global history table size\n-------- Precision rate: {self.precision_rate*100}% --------\n")
+            # Update state for the next ghr value
+            self.__set_state( pht[address], actual )
+            ghr.left_shift( actual )
+
+
+        print(f"2-Lvl-Global-Predictor\n-{ghr_size} global history table size\n-------- Precision rate: {self.precision_rate*100.0}% --------\n")
         
 
 
@@ -137,15 +133,15 @@ class PredictionTester:
         '''
 
 
-        #TODO: split jump and no jump depending on size_bit
+        #TODO: split jump and no jump depending on size_bit/ handle in State
         if(state_val in [0, 1] and actual == "0"):                          # Expected prediction: no jump
             self.correct_predictions+=1
-            print(f"correct at: {self.count}, state_val:{state_val}, actual:{actual} -- correct:{self.correct_predictions}")
+            #print(f"correct at: {self.count+1}, state_val:{state_val}, actual:{actual} -- correct:{self.correct_predictions}")
         elif(state_val in [2, 3] and actual == "1"):                        # Expected prediction: jump
             self.correct_predictions+=1
-            print(f"correct at: {self.count}, state_val:{state_val}, actual:{actual} -- correct:{self.correct_predictions}")
-        else:
-            print(f"wrong   at: {self.count}, state_val:{state_val}, actual:{actual} ")
+            #print(f"correct at: {self.count+1}, state_val:{state_val}, actual:{actual} -- correct:{self.correct_predictions}")
+        #else:
+            #print(f"wrong   at: {self.count+1}, state_val:{state_val}, actual:{actual} ")
 
         self.count+=1
         self.precision_rate = self.correct_predictions / self.count
