@@ -3,6 +3,6 @@ from State import State
 
 if __name__ == "__main__":
 
-    a = PredictionTester('trace_files/trace_gcc.txt')
+    a = PredictionTester('trace_files/trace.txt')
     
-    a.gshar_predictor()
+    a.local_2_bit_predictor()
