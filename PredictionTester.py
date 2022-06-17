@@ -77,7 +77,6 @@ class PredictionTester:
             self.__set_state( pht[address], actual )
             ghr.left_shift( actual )
 
-
         print(f"2-Lvl-Global-Predictor\n-{ghr_size} global history table size\n-------- Precision rate: {self.precision_rate*100.0}% --------\n")
         
 
@@ -87,9 +86,19 @@ class PredictionTester:
 
         '''
 
-        self.ghr = State(ghr_size)
+        ghr = State(ghr_size)
+        pht = PatternHistoryTable(2)
 
         for key, actual in tqdm(iterable=self.branches, unit="branches", colour='green'):
+
+            address = ghr.xor_address(key)   
+                                          
+            self.__update_precision( pht.get_val(address), actual )                 # Compare state at ghr value with 'acutal' value
+            self.__set_state( pht[address], actual )
+
+            ghr.left_shift( actual )                                                # Update global history register
+
+            '''
             self.ghr = self.__xor_ghr(key)
             address = self.ghr.get_val(bin=True)
 
@@ -103,9 +112,10 @@ class PredictionTester:
             address = self.__address_xor_ghr(key)
             state_after_shift = self.pht[address]                                              
             self.__set_state(state_after_shift, actual)
-
+            '''
 
         print(f"G-share-Predictor\n-{ghr_size} global history table size\n-------- Precision rate: {self.precision_rate*100}% --------\n")
+
 
 
 # Functions
@@ -146,21 +156,6 @@ class PredictionTester:
         self.count+=1
         self.precision_rate = self.correct_predictions / self.count
 
-
-
-    def ___xor_ghr(self, address):
-        r'''XOR a given address with ghr and set ghr to the new address.
-        The size of the ghr will be the size of the new_address
-
-        Args:
-            :param ``address``: Hexadecimal address
-            :param ``ghr``: binary value of global history table
-        
-        '''
-
-        address_str = str( int(address, 16) )[:-self.ghr.size_bit]                      # Convert and cut address to the correct length
-        new_address = int(address_str) ^ self.ghr.get_val()                                    # Return XOR of address and ghr 
-        return bin(new_address)
 
 
     def __branch_file_to_list(self, file_path):
