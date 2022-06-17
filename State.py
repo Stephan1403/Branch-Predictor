@@ -46,7 +46,7 @@ class State:
 
 
     def left_shift(self, x):
-        r'''Shift the value to the left and push x from the right
+        r'''Shift the value to the left and push x from the right and return the binary value
         
                 :param :char(0/1) ``x``: A bit that is shifted from the right side
 
