@@ -25,9 +25,6 @@ class PredictionTester:
     def __init__(self, file_path) -> None:
         self.branches = self.__branch_file_to_list(file_path)   # List of tuples with addresses and actuals
 
-        self.pht = {}
-        self.ghr = State(4)
-
         self.count = 0                                          # All branches of last predictor             
         self.correct_predictions = 0                            # Count of branches which have been right predicted
         self.precision_rate = 0                                 # Rate of correct predicted branches
@@ -41,6 +38,7 @@ class PredictionTester:
             :param ``address_size``: Size of address in Pattern history table in Bits
             :param ``state_size``: Size of state in Pattern history table in Bits
         ''' 
+
         pht = PatternHistoryTable(state_size)
 
         for key, actual in tqdm(iterable=self.branches, unit="branches" ,colour='green'):       # Iterate through branches, Tqdm is used to show the progress bar
@@ -54,15 +52,16 @@ class PredictionTester:
         
         
         
-    def two_level_global_predictor(self, ghr_size=4):                   #TODO write cleaner
+    def two_level_global_predictor(self, ghr_size=4, state_size=2):                   #TODO write cleaner
         r'''Test percicion of the two level global predictor
 
         Args
-            :param ``ghr_size``: size of gloabl history table in bits (default: 4 Bit)
+            :param ``ghr_size``: Bit size of the global history register
+            :param ``state_size``: Bit size of states inside pattern history table
         '''
 
         ghr = State(ghr_size)                        
-        pht = PatternHistoryTable(2)
+        pht = PatternHistoryTable(state_size)
 
         actuals_list = [data[1] for data in self.branches]
         for actual in tqdm(iterable=actuals_list, unit="branches" ,colour='green'): # Iterate throug all 'actual' values
@@ -70,7 +69,7 @@ class PredictionTester:
 
             # Check for correct prediction
             address = ghr.get_val( bin=True )                                                
-            self.__update_precision( pht.get_val(address), actual )                 # Compare state at ghr value with 'acutal' value
+            self.__update_precision( pht[address].get_val(), actual )                 # Compare state at ghr value with 'acutal' value
 
 
             # Update state for the next ghr value
@@ -81,38 +80,26 @@ class PredictionTester:
         
 
 
-    def gshar_predictor(self, ghr_size=4):
-        r'''
+    def gshare_predictor(self, ghr_size=4, state_size=2):
+        r'''Test prediction of share predictor
 
+        Args:
+            param: ``ghr_size``: Bit size of the global history register
+            :param ``state_size``: Bit size of states inside pattern history table
         '''
 
         ghr = State(ghr_size)
-        pht = PatternHistoryTable(2)
+        pht = PatternHistoryTable(state_size)
 
         for key, actual in tqdm(iterable=self.branches, unit="branches", colour='green'):
 
             address = ghr.xor_address(key)   
                                           
-            self.__update_precision( pht.get_val(address), actual )                 # Compare state at ghr value with 'acutal' value
+            self.__update_precision( pht[address].get_val(), actual )                 # Compare state at ghr value with 'acutal' value
             self.__set_state( pht[address], actual )
 
             ghr.left_shift( actual )                                                # Update global history register
 
-            '''
-            self.ghr = self.__xor_ghr(key)
-            address = self.ghr.get_val(bin=True)
-
-            if self.ghr.get_val() not in self.pht:
-                self.pht[address] = State(2)
-
-            state_before_shift = self.pht[address]
-            self.__update_precision(state_before_shift, actual)
-
-            self.ghr.left_shift(actual)                                             # Push Actual value (0 or 1) from the right to change ghr value
-            address = self.__address_xor_ghr(key)
-            state_after_shift = self.pht[address]                                              
-            self.__set_state(state_after_shift, actual)
-            '''
 
         print(f"G-share-Predictor\n-{ghr_size} global history table size\n-------- Precision rate: {self.precision_rate*100}% --------\n")
 
@@ -120,7 +107,7 @@ class PredictionTester:
 
 # Functions
     def __set_state(self, state, actual):
-        r'''Set state of pattern history table depending on current actual value
+        r'''Set state depending on current actual value
 
         Args:
             :param ``state``: The state that will be updated
@@ -138,8 +125,8 @@ class PredictionTester:
         r'''Increase the correct_predictions value depending on expected outcome and actual outcome
             
         Args:
-            :param ``state_val``: Value of current state for branch
-            :param ``actual``: Eventual outcome (jump o. no jump) 
+            :param ``state_val``: Value of current state for branch - expected outcome
+            :param ``actual``: Eventual outcome (jump o. no jump)   - acutal outcome
         '''
 
 
