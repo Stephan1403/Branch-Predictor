@@ -61,3 +61,21 @@ class State:
 
         self.set_val(new_value)
         return new_value
+
+    
+    def xor_address(self, address):                #TODO: check if address is long enough
+        r'''XOR the value of the state with a address
+
+        Args:
+            :param ``address``: hex address to xor with the state
+        '''
+
+        address_str =   bin( int(address, 16) )                         # Convert address to binary
+        address_str = "0b" + self.size_bit * '0' + address_str[2:]      # Fill with '0's
+        address_str = address_str[-self.size_bit:]                      # Cut the end
+        if address_str != "0b0000":
+            pass
+
+        # XOR the cut address with the state value
+        xor_address = int(address_str, 2) ^ int(self.value, 2)          # XOR the int values of address and state value
+        return bin(xor_address)
