@@ -13,7 +13,7 @@ class PatternHistoryTable:
 
 
     def get_val(self, key):
-        '''retreive state with key and return its value'''
+        '''retreive state with key and return its decimal value'''
 
         state = self.__getitem__(key)
         return state.get_val()
