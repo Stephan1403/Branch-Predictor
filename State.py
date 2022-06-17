@@ -9,11 +9,10 @@ class State:
     self.value is a string representing a binary number
     '''
 
-    def __init__(self, size_bit, value = "0b0") -> None:
-        if size_bit > 2:
-            self.size_bit = size_bit                                                    # Size of history table
-        else:
-            self.size_bit = 2
+    def __init__(self, size_bit=2, value = "0b0") -> None:
+        self.size_bit = size_bit
+        if size_bit <= 0:
+            self.size_bit = 2 
 
         self.value = "0b0"
         self.set_val(value)
@@ -69,7 +68,7 @@ class State:
 
             Iterate through value and move all values without the first two (0b)
         '''
-        
+
         new_value = "0b"
         for i in range( len(self.value) ):
             if(i<=2):
