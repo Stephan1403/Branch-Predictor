@@ -1,8 +1,7 @@
-from State import State
-from PatternHistoryTable import PatternHistoryTable
+from Classes.State import State
+from Classes.PatternHistoryTable import PatternHistoryTable
 from tqdm import tqdm                                       # For progress bar
 
-# TODO: change jump (name) to acutal
 
 # TODO: introduce variable that represents the used predictor (to show what correct_rate is for)
 
@@ -15,8 +14,9 @@ class PredictionTester:
 
     Predictors:
         - ``local_2_bit_predictor``
-        - ``lorem ipsum``
-        - ``lorem ipsum``
+        - ``two_level_gloabl_predictor``
+        - ``gshare_predictor``
+        - ``tournament_predictor``
 
     Usage:
         # TODO: ...    
@@ -24,6 +24,8 @@ class PredictionTester:
 
     def __init__(self, file_path) -> None:
         self.branches = self.__branch_file_to_list(file_path)   # List of tuples with addresses and actuals
+
+        self.pred_evaluations = {}                              # Dic with key (used predictor) and a CorrectPredictionEvaluater object
 
         self.count = 0                                          # All branches of last predictor             
         self.correct_predictions = 0                            # Count of branches which have been right predicted
@@ -44,7 +46,7 @@ class PredictionTester:
         for key, actual in tqdm(iterable=self.branches, unit="branches" ,colour='green'):       # Iterate through branches, Tqdm is used to show the progress bar
             address = bin(int(key, 16))[-address_size:]                                         # Address: binary value of hexadecimal branch address
 
-            self.__update_precision( pht[address].get_jump_val(), actual )                             # Check if last prediction was correct
+            self.__update_precision( pht[address].get_jump_val(), actual )                      # Check if last prediction was correct
             self.__set_state( pht[address], actual )                                          
 
 
@@ -65,7 +67,6 @@ class PredictionTester:
 
         actuals_list = [data[1] for data in self.branches]
         for actual in tqdm(iterable=actuals_list, unit="branches" ,colour='green'): # Iterate throug all 'actual' values
-
 
             # Check for correct prediction
             address = ghr.get_val( bin=True )                                                
@@ -92,7 +93,6 @@ class PredictionTester:
         pht = PatternHistoryTable(state_size)
 
         for key, actual in tqdm(iterable=self.branches, unit="branches", colour='green'):
-
             address = ghr.xor_address(key)   
                                           
             self.__update_precision( pht[address].get_jump_val(), actual )                  # Compare state at ghr value with 'acutal' value
@@ -104,13 +104,49 @@ class PredictionTester:
         print(f"G-share-Predictor\n-{ghr_size} global history table size\n-------- Precision rate: {self.precision_rate*100}% --------\n")
 
 
-
+    #TODO: allow to use gshare instead of just global ???
+    # - alway update ghr, global_pht and local_pht (whatever selected_predictor is)
+    # - but only choosen predictor gives value
     def tournament_predictor(self):
         r''''''
 
+        selected_predictor = {}                    # Stores selected predictor type for each branch TODO: ?? create as class
+
+        # Global
+        ghr = State(4)
+        global_pht = State(2)
+
+        # Local
+        local_pht = State(2)
+
+        for key, acutal in tqdm(iterable=self.branches, unit="branches", colour='green'):
+            
+            if not key in selected_predictor:
+                selected_predictor[key] = "global"  # default
+
+            if selected_predictor[key] == "global":
+                # Using global
+                pass
+
+
+            elif selected_predictor[key] == "local":
+                # Using local
+                pass
+
+
+            # 1. Update percision for selected predictor only
+
+
+
+            # 2. If wrong -> test for other predictor and change if true
+
+
+            # 3. Set state of both local and global predictor + left shift for global
+
+
 
 # Functions
-    def __set_state(self, state, actual):
+    def __set_state(self, state, actual):       
         r'''Set state depending on current actual value
 
         Args:
@@ -135,10 +171,10 @@ class PredictionTester:
 
 
         #TODO: split jump and no jump depending on size_bit/ handle in State
-        if(jump_val == "no jump" and actual == "0"):                          # Expected prediction: no jump
+        if(jump_val == "no jump" and actual == "0"):                            # Expected prediction: no jump
             self.correct_predictions+=1
             #print(f"correct at: {self.count+1}, state_val:{state_val}, actual:{actual} -- correct:{self.correct_predictions}")
-        elif(jump_val == "jump" and actual == "1"):                        # Expected prediction: jump
+        elif(jump_val == "jump" and actual == "1"):                             # Expected prediction: jump
             self.correct_predictions+=1
             #print(f"correct at: {self.count+1}, state_val:{state_val}, actual:{actual} -- correct:{self.correct_predictions}")
         #else:
