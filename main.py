@@ -1,8 +1,7 @@
 from PredictionTester import PredictionTester
-from State import State
 
 if __name__ == "__main__":
 
-    a = PredictionTester('trace_files/trace.txt')
+    a = PredictionTester('trace_files/trace_gcc.txt')
     
-    a.gshare_predictor()
+    a.gshare_predictor(4)

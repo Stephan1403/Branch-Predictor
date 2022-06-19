@@ -1,4 +1,4 @@
-from State import State
+from Classes.State import State
 
 class PatternHistoryTable:
     '''State History Table is a basic dictonary with extended functionality. 
