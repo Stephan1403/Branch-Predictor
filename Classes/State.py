@@ -34,16 +34,26 @@ class State:
         self.value = "0b" + (self.size_bit - len(val) + 2)*"0" + val[2:]                # +2 for "0b" which aren't counted for size_bit
 
 
-    def no_jump(self):
+    def set_state(self, actual):
+        r''''''
+        
+        if actual == "0":                 # no Jump
+            self.no_jump()
+        if actual == "1":                 # Jump
+            self.jump()   
+
+
+
+    def no_jump(self):          # TODO change to __no_jump()
         r'''decrement value by 1'''
-        if( self.get_val() != 0 ):                                                    # not zero 
+        if( self.get_val() != 0 ):                                                      # not zero 
             bin_num = bin( int(self.value, 2) - 1 )
             self.set_val(bin_num)
 
 
     def jump(self):
         r'''increment value by 1'''
-        if( self.get_val() < pow(2, self.size_bit)-1 ):                               # smaller than highest number ( 2^size_bit -1 )
+        if( self.get_val() < pow(2, self.size_bit)-1 ):                                 # smaller than highest number ( 2^size_bit -1 )
             bin_num = bin( int(self.value, 2) + 1 )
             self.set_val(bin_num)
 
