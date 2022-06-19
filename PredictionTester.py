@@ -47,7 +47,8 @@ class PredictionTester:
             address = bin(int(key, 16))[-address_size:]                                         # Address: binary value of hexadecimal branch address
 
             self.__update_precision( pht[address].get_jump_val(), actual )                      # Check if last prediction was correct
-            self.__set_state( pht[address], actual )                                          
+            pht[address].set_state(actual)
+                                       
 
 
         print(f"Local 2-Bit Predictor\n-{address_size} bit address size\n-------- Precision rate: {self.precision_rate*100}% --------\n")
@@ -74,7 +75,7 @@ class PredictionTester:
 
 
             # Update state for the next ghr value
-            self.__set_state( pht[address], actual )
+            pht[address].set_state(actual)
             ghr.left_shift( actual )
 
         print(f"2-Lvl-Global-Predictor\n-{ghr_size} global history table size\n-------- Precision rate: {self.precision_rate*100.0}% --------\n")
@@ -96,7 +97,7 @@ class PredictionTester:
             address = ghr.xor_address(key)   
                                           
             self.__update_precision( pht[address].get_jump_val(), actual )                  # Compare state at ghr value with 'acutal' value
-            self.__set_state( pht[address], actual )
+            pht[address].set_state(actual)
 
             ghr.left_shift( actual )                                                        # Update global history register
 
@@ -146,7 +147,7 @@ class PredictionTester:
 
 
 # Functions
-    def __set_state(self, state, actual):       
+    def __set_state(self, state, actual):       # Move to state itself
         r'''Set state depending on current actual value
 
         Args:
