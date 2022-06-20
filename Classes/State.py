@@ -18,12 +18,14 @@ class State:
         self.set_val(value)
 
 
+
     def get_val(self, bin=False):
         r'''return value of state as binary or decimal'''
         if bin:
             return self.value
         else:
             return int(self.value, 2)
+
 
 
     def set_val(self, val):
@@ -34,9 +36,13 @@ class State:
         self.value = "0b" + (self.size_bit - len(val) + 2)*"0" + val[2:]                # +2 for "0b" which aren't counted for size_bit
 
 
+
     def set_state(self, actual):
-        r''''''
-        
+        r'''Set value depending on actual
+
+        Args:
+            :param ``actual``: outcome of branch
+        '''
         if actual == "0":                 # no Jump
             self.no_jump()
         if actual == "1":                 # Jump
@@ -51,6 +57,7 @@ class State:
             self.set_val(bin_num)
 
 
+
     def jump(self):
         r'''increment value by 1'''
         if( self.get_val() < pow(2, self.size_bit)-1 ):                                 # smaller than highest number ( 2^size_bit -1 )
@@ -58,17 +65,19 @@ class State:
             self.set_val(bin_num)
 
 
+
     def get_jump_val(self):
         r'''Return jump value of state.
         
-        - In the lower half of the possible value range (depending on size_bit) return ``no jump``.
-        - Otherwise return ``jump``.
+        - In the lower half of the possible value range (depending on size_bit) return ``0``.
+        - Otherwise return ``1``.
         '''
 
         if( self.get_val() < pow(2, self.size_bit-1)):    
-            return "no jump"
+            return "0"
         else:
-            return "jump"
+            return "1"
+
 
 
     def left_shift(self, x):
@@ -88,6 +97,7 @@ class State:
 
         self.set_val(new_value)
         return new_value
+
 
     
     def xor_address(self, address):                #TODO: check if address is long enough
