@@ -1,5 +1,4 @@
 from PredictionTester import PredictionTester
-import requests
 
 if __name__ == "__main__":
 
@@ -7,4 +6,4 @@ if __name__ == "__main__":
     
     a.tournament_predictor(address_size=10)
 
-    a = requests.get
+
