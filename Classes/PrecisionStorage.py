@@ -1,5 +1,6 @@
 
-class PrecisionStorage:           # TODO: activate analysis - to store further information
+
+class PrecisionStorage:
     r'''Stores important information about a Predictor. 
     
     '''
@@ -8,6 +9,8 @@ class PrecisionStorage:           # TODO: activate analysis - to store further i
         self.count = 0                      # Count all branches
         self.correct_predictions = 0        # Count all predictions which were the same as their outcome
 
+        # Lists for graph
+        self.precision_rate_history = [0]
 
     def set_precision(self, jump_val, actual):
         r'''Increase the correct_predictions value depending on expected outcome and actual outcome.
@@ -19,14 +22,24 @@ class PrecisionStorage:           # TODO: activate analysis - to store further i
         Return True if prediction was correct otherwise false
         '''
         self.count+=1
+        
 
-        if(jump_val == actual):                            # Expected prediction is same as outcome
+        if(jump_val == actual):                        # Expected prediction is same as outcome
             self.correct_predictions+=1
+            self.precision_rate_history.append(self.correct_predictions/self.count*100) # For graph
             return True
 
+        self.precision_rate_history.append(self.correct_predictions/self.count*100)     # For graph
         return False
 
 
-    def evaluate(self):
-        r'''Process all'''
-        print(f"-------- Precision rate: {self.correct_predictions/self.count}% --------\n")
+    def evaluate(self, predictor_type):
+        '''Calculate the precision rate for the given predictor
+        
+        Return history of the precision rate
+        '''
+        print(f"Precisionrate = {self.correct_predictions/self.count*100}%")
+
+        return self.precision_rate_history
+
+
