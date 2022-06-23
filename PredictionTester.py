@@ -41,6 +41,8 @@ class PredictionTester:
             :param ``state_size``: Size of state in Pattern history table in Bits
         ''' 
 
+        print(f"Local-2-bit-predictor: {address_size} Bit address size; {state_size} Bit state size")
+
         pht = PatternHistoryTable(state_size)
         p_storage = self.percision_storage_dic['local'] = PrecisionStorage()                           # Store all correct predictions
 
@@ -61,6 +63,8 @@ class PredictionTester:
             :param ``ghr_size``: Bit size of the global history register
             :param ``state_size``: Bit size of states inside pattern history table
         '''
+
+        print(f"Two Level Global Predictor:     {ghr_size} Bit global history register size;    {state_size} Bit state size")
 
         ghr = State(ghr_size)                        
         pht = PatternHistoryTable(state_size)
@@ -90,6 +94,8 @@ class PredictionTester:
             :param ``state_size``: Bit size of states inside pattern history table
         '''
 
+        print(f"Gshare Predictor:   {ghr_size} Bit global history register size;    {state_size} Bit state size")
+
         ghr = State(ghr_size)
         pht = PatternHistoryTable(state_size)
         p_storage = self.percision_storage_dic['gshare'] = PrecisionStorage()               # Create a new 
@@ -117,6 +123,8 @@ class PredictionTester:
             :param ``state_size``: Bit size of all states in the pattern history tables
             :param ``address_size``: Bit size of the addresses in the local pattern history table
         '''
+
+        print(f"Tournament Predictor:   {address_size} Bit address size;   {ghr_size} Bit global history register size;     {state_size} Bit state size")
 
         p_storage = self.percision_storage_dic['tournament'] = PrecisionStorage()
         pred_selecter = PredictionSelecter()
@@ -160,7 +168,6 @@ class PredictionTester:
 
 
         p_storage.evaluate()
-
 
 
 # Functions
