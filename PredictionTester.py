@@ -2,6 +2,8 @@ from Classes.PatternHistoryTable import PatternHistoryTable
 from Classes.PrecisionStorage import PrecisionStorage
 from Classes.PredictionSelecter import PredictionSelecter
 from Classes.State import State
+
+import matplotlib.pyplot as plt
 from tqdm import tqdm                                       # For progress bar
 
 
@@ -50,7 +52,7 @@ class PredictionTester:
             p_storage.set_precision( pht[address].get_jump_val(), actual )                      # Check for correct prediction
             pht[address].set_state(actual)                                                      # Update State
 
-        p_storage.evaluate()
+        return p_storage.evaluate("Local 2-Bit Predictor")
         
         
 
@@ -78,7 +80,7 @@ class PredictionTester:
             pht[address].set_state(actual)
             ghr.left_shift(actual)
 
-        p_storage.evaluate()
+        return p_storage.evaluate("Two-level-gloabl Predictor")
         
 
 
@@ -105,7 +107,7 @@ class PredictionTester:
             pht[address].set_state(actual)
             ghr.left_shift(actual)                                                          # Update global history register
 
-        p_storage.evaluate()
+        return p_storage.evaluate("Gshare Predictor")
 
 
 
@@ -159,11 +161,70 @@ class PredictionTester:
             loc_pht[address].set_state(actual)
 
 
-        p_storage.evaluate()
+        return p_storage.evaluate("Tournament Predictor")
 
 
 
 # Functions
+    def compare_all(self):
+        '''Compare all predictors
+        
+        Graphs:
+            - Compare values of prdictors
+            - Compare all developments of the precision
+        '''
+
+        # Execute all predictions
+        a = self.local_2_bit_predictor()
+        b = self.two_level_global_predictor()
+        c = self.gshare_predictor()
+        d = self.tournament_predictor()
+
+
+        # Define Subplots with two columns
+        fig, ax = plt.subplots(1, 2)
+        fig.subplots_adjust(bottom=0.2, hspace=2)
+
+        # -- Graph plot --
+
+        # Set axes
+        ax[0].set_ylabel("Precision in %")
+        #ax[0].set_yticks([x*10 for x in range(10)])
+        ax[0].set_xticks([0, 1, 2, 3], labels=["Local-2-Bit", "Two-level-Gloabl", "G-share", "Tournament"])
+        plt.setp(ax[0].get_xticklabels(), rotation=30, horizontalalignment='right')
+
+
+        # Set final precision values of predictors
+        p1 = ax[0].bar(0, a[-1])
+        p2 = ax[0].bar(1, b[-1])
+        p3 = ax[0].bar(2, c[-1])
+        p4 = ax[0].bar(3, c[-1])
+        
+        ax[0].bar_label(p1, fmt='%.2f')
+        ax[0].bar_label(p2, fmt='%.2f')
+        ax[0].bar_label(p3, fmt='%.2f')
+        ax[0].bar_label(p4, fmt='%.2f')
+
+        # -- Precision History plot -- 
+
+        ax[1].set_ylabel("Precision in %")
+        fac = len(a)/5
+        ax[1].set_xticks( [x*fac for x in range(5)], labels=[p*20 for p in range(5)] )
+
+        #ax[1].set_xticks([x*10 for x in range(20)])
+        #ax[1].set_xlim(xmin=0.0, xmax=len(a))
+        #ax[1].set_ylim(ymin=0.0, ymax=max(a))
+
+        ax[1].plot([x for x in range(len(a))], a, label="Local-2-Bit")
+        ax[1].plot([x for x in range(len(b))], b, label="Two-Level-Global")
+        ax[1].plot([x for x in range(len(c))], c, label="G-share")
+        ax[1].plot([x for x in range(len(d))], d, label="Tournament")
+
+
+        # Show plot
+        plt.legend()
+        plt.show()
+
     def __branch_file_to_list(self, file_path):
         r'''Converts branches inside of file into a list of tuples
 
@@ -179,3 +240,5 @@ class PredictionTester:
                 address, actual = b.split(' ')
                 tem_list.append( (address, actual) )
         return tem_list
+
+
