@@ -10,7 +10,7 @@ class PredictionTester:
     Prediction Tester
     ~~~~~~~~~~~~~~~~~
     
-    used to test different branch prediction methods
+    Used to test different branch prediction methods
     
     Args:
         :param ``file_path``: path to file containing branches and their actual results
@@ -18,7 +18,7 @@ class PredictionTester:
 
     Predictors:
         - ``local_2_bit_predictor``
-        - ``two_level_gloabl_predictor``
+        - ``two_level_global_predictor``
         - ``gshare_predictor``
         - ``tournament_predictor``
 
@@ -29,7 +29,7 @@ class PredictionTester:
 
     def __init__(self, file_path) -> None:
         self.branches = self.__branch_file_to_list(file_path)   # List of tuples with addresses and actuals
-        self.percision_storage_dic = {}                         # Dic with key (used predictor) and a PercisionStorage object
+        self.precision_storage_dic = {}                         # Dic with key (used predictor) and a PrecisionStorage object
 
 
 # Predictors        
@@ -37,17 +37,17 @@ class PredictionTester:
         r'''Test precision of the local 2 Bit predictor.
         
         Args
-            :param ``address_size``: Size of address in Pattern history table in Bits
-            :param ``state_size``: Size of state in Pattern history table in Bits
+            :param ``address_size``: Bit size of address in Pattern history table
+            :param ``state_size``: Bit size of state in Pattern history table
         ''' 
 
         print(f"Local-2-bit-predictor: {address_size} Bit address size; {state_size} Bit state size")
 
         pht = PatternHistoryTable(state_size)
-        p_storage = self.percision_storage_dic['local'] = PrecisionStorage()                           # Store all correct predictions
+        p_storage = self.precision_storage_dic['local'] = PrecisionStorage()                    # Store all correct predictions
 
         for key, actual in tqdm(iterable=self.branches, unit="branches" ,colour='green'):       # Iterate through branches, Tqdm is used to show the progress bar
-            address = bin( int(key, 16) )[-address_size:]                                         # Address: binary value of hexadecimal branch address
+            address = bin( int(key, 16) )[-address_size:]                                       # Address: binary value of hexadecimal branch address
 
             p_storage.set_precision( pht[address].get_jump_val(), actual )                      # Check for correct prediction
             pht[address].set_state(actual)                                                      # Update State
@@ -56,7 +56,7 @@ class PredictionTester:
         
         
 
-    def two_level_global_predictor(self, ghr_size=4, state_size=2):                   #TODO write cleaner
+    def two_level_global_predictor(self, ghr_size=4, state_size=2):                   
         r'''Test precicion of the two level global predictor
 
         Args
@@ -68,7 +68,7 @@ class PredictionTester:
 
         ghr = State(ghr_size)                        
         pht = PatternHistoryTable(state_size)
-        p_storage = self.percision_storage_dic['global'] = PrecisionStorage()
+        p_storage = self.precision_storage_dic['global'] = PrecisionStorage()
 
         actuals_list = [data[1] for data in self.branches]
         for actual in tqdm(iterable=actuals_list, unit="branches" ,colour='green'):    # Iterate throug all 'actual' values
@@ -98,7 +98,7 @@ class PredictionTester:
 
         ghr = State(ghr_size)
         pht = PatternHistoryTable(state_size)
-        p_storage = self.percision_storage_dic['gshare'] = PrecisionStorage()               # Create a new 
+        p_storage = self.precision_storage_dic['gshare'] = PrecisionStorage()               # Create a new storage
 
         for key, actual in tqdm(iterable=self.branches, unit="branches", colour='green'):
 
@@ -126,7 +126,7 @@ class PredictionTester:
 
         print(f"Tournament Predictor:   {address_size} Bit address size;   {ghr_size} Bit global history register size;     {state_size} Bit state size")
 
-        p_storage = self.percision_storage_dic['tournament'] = PrecisionStorage()
+        p_storage = self.precision_storage_dic['tournament'] = PrecisionStorage()
         pred_selecter = PredictionSelecter()
 
         # Global Declaration
@@ -171,6 +171,14 @@ class PredictionTester:
 
 
 # Functions
+    def compare_predictors():
+        r'''
+        
+        
+        
+        '''
+
+
     def __branch_file_to_list(self, file_path):
         r'''Converts branches inside of file into a list of tuples
 
