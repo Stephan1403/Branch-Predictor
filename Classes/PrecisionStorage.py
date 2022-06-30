@@ -33,6 +33,7 @@ class PrecisionStorage:
         
         Return history of the precision rate
         '''
-        print(f"Precisionrate = {self.correct_predictions/self.count*100}%\n")
+        rate = format( (self.correct_predictions/self.count*100), ".2f")
+        print(f"Precisionrate = { rate }%\n")
 
 
