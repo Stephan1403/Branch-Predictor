@@ -25,9 +25,10 @@ if __name__ == "__main__":
     pr2 = PredictionTester('trace_files/trace.txt')
     pr2.two_level_global_predictor()
     pr.two_level_global_predictor(ghr_size=2)
-s
+
     print("\n")
     pr3 = PredictionTester('trace_files/trace_gcc.txt')
     pr3.gshare_predictor()
+    
     '''
     
