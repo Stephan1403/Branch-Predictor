@@ -2,7 +2,6 @@ from Classes.PatternHistoryTable import PatternHistoryTable
 from Classes.PrecisionStorage import PrecisionStorage
 from Classes.PredictionSelecter import PredictionSelecter
 from Classes.State import State
-from tqdm import tqdm                                       # For progress bar
 
 
 class PredictionTester:
@@ -46,7 +45,7 @@ class PredictionTester:
         pht = PatternHistoryTable(state_size)
         p_storage = self.precision_storage_dic['local'] = PrecisionStorage()                    # Store all correct predictions
 
-        for key, actual in tqdm(iterable=self.branches, unit="branches" ,colour='green'):       # Iterate through branches, Tqdm is used to show the progress bar
+        for key, actual in self.branches:      
             address = bin( int(key, 16) )[-address_size:]                                       # Address: binary value of hexadecimal branch address
 
             p_storage.set_precision( pht[address].get_jump_val(), actual )                      # Check for correct prediction
@@ -71,7 +70,7 @@ class PredictionTester:
         p_storage = self.precision_storage_dic['global'] = PrecisionStorage()
 
         actuals_list = [data[1] for data in self.branches]
-        for actual in tqdm(iterable=actuals_list, unit="branches" ,colour='green'):    # Iterate throug all 'actual' values
+        for actual in actuals_list:                                                             # Iterate throug all 'actual' values
 
             address = ghr.get_val( bin=True ) 
 
@@ -100,7 +99,7 @@ class PredictionTester:
         pht = PatternHistoryTable(state_size)
         p_storage = self.precision_storage_dic['gshare'] = PrecisionStorage()               # Create a new storage
 
-        for key, actual in tqdm(iterable=self.branches, unit="branches", colour='green'):
+        for key, actual in self.branches:
 
             address = ghr.xor_address(key)   
 
@@ -137,7 +136,7 @@ class PredictionTester:
         loc_pht = PatternHistoryTable(state_size)                                   # Local Pattern History Table
 
 
-        for key, actual in tqdm(iterable=self.branches, unit="branches" ,colour='green'):
+        for key, actual in self.branches:
             
             address = bin( int(key, 16) )[-address_size:]
             ghr_val = ghr.get_val( bin=True )
@@ -170,13 +169,40 @@ class PredictionTester:
         p_storage.evaluate()
 
 
+
 # Functions
-    def compare_predictors():
-        r'''
+    def compare_predictors(self):
+        r'''Iterate trough precision_storage_dic and show all values of it
         
-        
-        
+        Can only show predictors which have been tested already. 
+        State, address and ghr sizes will be the same as when the predictor has been tested.
         '''
+
+        if not self.precision_storage_dic:
+            print("No predictors have been run yet")
+        else:
+            print("-" * 57)
+            
+        if 'local' in self.precision_storage_dic:
+            rate = self.precision_storage_dic['local'].evaluate(output=False)
+            print( "Local-2-Bit-predictor".ljust(30), f"|  Precision rate = {rate}%")
+            print("-" * 57)
+
+        if 'global' in self.precision_storage_dic:
+            rate = self.precision_storage_dic['global'].evaluate(output=False)
+            print( "Two-level global predictor".ljust(30), f"|  Precision rate = {rate}%")
+            print("-" * 57)
+
+        if 'gshare' in self.precision_storage_dic:
+            rate = self.precision_storage_dic['gshare'].evaluate(output=False)
+            print( "Gshare predictor".ljust(30), f"|  Precision rate = {rate}%")
+            print("-" * 57)
+
+        if 'tournament' in self.precision_storage_dic:
+            rate = self.precision_storage_dic['tournament'].evaluate(output=False)
+            print( "Tournament predictor".ljust(30), f"|  Precision rate = {rate}%")
+            print("-" * 57)
+
 
 
     def __branch_file_to_list(self, file_path):
