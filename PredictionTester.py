@@ -16,14 +16,14 @@ class PredictionTester:
             
 
     Predictors:
-        - ``local_2_bit_predictor``
+        - ``local_predictor``
         - ``two_level_global_predictor``
         - ``gshare_predictor``
         - ``tournament_predictor``
 
     Usage:
         >>> pt = PredictionTester('file.txt')  
-        >>> pt.local_2_bit_predictor(state_size=4)
+        >>> pt.local_predictor(state_size=4)
     '''
 
     def __init__(self, file_path) -> None:
@@ -32,15 +32,15 @@ class PredictionTester:
 
 
 # Predictors        
-    def local_2_bit_predictor(self, address_size=32, state_size=2):
-        r'''Test precision of the local 2 Bit predictor.
+    def local_predictor(self, address_size=32, state_size=2):
+        r'''Test precision of the local predictor.
         
         Args
             :param ``address_size``: Bit size of address in Pattern history table
             :param ``state_size``: Bit size of state in Pattern history table
         ''' 
 
-        print(f"Local-2-bit-predictor: {address_size} Bit address size; {state_size} Bit state size")
+        print(f"Local predictor: {address_size} Bit address size; {state_size} Bit state size")
 
         pht = PatternHistoryTable(state_size)
         p_storage = self.precision_storage_dic['local'] = PrecisionStorage()                    # Store all correct predictions
@@ -185,7 +185,7 @@ class PredictionTester:
             
         if 'local' in self.precision_storage_dic:
             rate = self.precision_storage_dic['local'].evaluate(output=False)
-            print( "Local-2-Bit-predictor".ljust(30), f"|  Precision rate = {rate}%")
+            print( "Local predictor".ljust(30), f"|  Precision rate = {rate}%")
             print("-" * 57)
 
         if 'global' in self.precision_storage_dic:
