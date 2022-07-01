@@ -28,12 +28,17 @@ class PrecisionStorage:
         return False
 
 
-    def evaluate(self):
+    def evaluate(self, output=True):
         '''Calculate the precision rate for the given predictor
+
+        Args:
+            :param ``ouptut``: Wether to print the evaluated precision rate 
         
         Return history of the precision rate
         '''
         rate = format( (self.correct_predictions/self.count*100), ".2f")
-        print(f"Precisionrate = { rate }%\n")
+        if output: print(f"Precisionrate = { rate }%\n")
+
+        return rate
 
 
