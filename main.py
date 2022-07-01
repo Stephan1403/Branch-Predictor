@@ -2,13 +2,15 @@ from PredictionTester import PredictionTester
 
 if __name__ == "__main__":
 
+    print("\n")
 
+
+    
     pr = PredictionTester('trace_files/trace.txt')
     
     pr.local_predictor()
-    pr.two_level_global_predictor()
-    pr.gshare_predictor()
     pr.tournament_predictor()
+
 
     pr.compare_predictors()                             # Compare all predictors that have been tested
 
