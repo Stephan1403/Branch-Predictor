@@ -50,7 +50,7 @@ class State:
 
 
 
-    def no_jump(self):          # TODO change to __no_jump()
+    def no_jump(self):
         r'''decrement value by 1'''
         if( self.get_val() != 0 ):                                                      # not zero 
             bin_num = bin( int(self.value, 2) - 1 )
@@ -102,7 +102,7 @@ class State:
 
 
     
-    def xor_address(self, address):                #TODO: check if address is long enough
+    def xor_address(self, address):
         r'''XOR the value of the state with a address
 
         Args:
@@ -110,7 +110,7 @@ class State:
         '''
 
         address_str =   bin( int(address, 16) )                         # Convert address to binary
-        address_str = "0b" + self.size_bit * '0' + address_str[2:]      # Fill with '0's
+        address_str = "0b" + self.size_bit * '0' + address_str[2:]      # Fill with '0's, depending on size_bit
         address_str = address_str[-self.size_bit:]                      # Cut the end
 
         # XOR the cut address with the state value
