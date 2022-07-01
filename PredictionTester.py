@@ -40,7 +40,7 @@ class PredictionTester:
             :param ``state_size``: Bit size of state in Pattern history table
         ''' 
 
-        print(f"Local predictor: {address_size} Bit address size; {state_size} Bit state size")
+        print(f"Local predictor:            {address_size} Bit address size;                   {state_size} Bit state size")
 
         pht = PatternHistoryTable(state_size)
         p_storage = self.precision_storage_dic['local'] = PrecisionStorage()                    # Store all correct predictions
@@ -63,7 +63,7 @@ class PredictionTester:
             :param ``state_size``: Bit size of states inside pattern history table
         '''
 
-        print(f"Two Level Global Predictor:     {ghr_size} Bit global history register size;    {state_size} Bit state size")
+        print(f"Two Level Global Predictor: {ghr_size} Bit global history register size;    {state_size} Bit state size")
 
         ghr = State(ghr_size)                        
         pht = PatternHistoryTable(state_size)
@@ -93,7 +93,7 @@ class PredictionTester:
             :param ``state_size``: Bit size of states inside pattern history table
         '''
 
-        print(f"Gshare Predictor:   {ghr_size} Bit global history register size;    {state_size} Bit state size")
+        print(f"Gshare Predictor:           {ghr_size} Bit global history register size;    {state_size} Bit state size")
 
         ghr = State(ghr_size)
         pht = PatternHistoryTable(state_size)
@@ -123,7 +123,7 @@ class PredictionTester:
             :param ``address_size``: Bit size of the addresses in the local pattern history table
         '''
 
-        print(f"Tournament Predictor:   {address_size} Bit address size;   {ghr_size} Bit global history register size;     {state_size} Bit state size")
+        print(f"Tournament Predictor:       {ghr_size} Bit global history register size;    {state_size} Bit state size    {address_size} Bit address size;")
 
         p_storage = self.precision_storage_dic['tournament'] = PrecisionStorage()
         pred_selecter = PredictionSelecter()
@@ -219,4 +219,4 @@ class PredictionTester:
             for b in f.read().splitlines():
                 address, actual = b.split(' ')
                 tem_list.append( (address, actual) )
-        return tem_list
+        return tem_list[:100]
