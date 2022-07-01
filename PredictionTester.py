@@ -219,4 +219,4 @@ class PredictionTester:
             for b in f.read().splitlines():
                 address, actual = b.split(' ')
                 tem_list.append( (address, actual) )
-        return tem_list[:100]
+        return tem_list
