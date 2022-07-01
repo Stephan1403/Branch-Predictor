@@ -5,7 +5,7 @@ if __name__ == "__main__":
 
     pr = PredictionTester('trace_files/trace.txt')
     
-    pr.local_2_bit_predictor()
+    pr.local_predictor()
     pr.two_level_global_predictor()
     pr.gshare_predictor()
     pr.tournament_predictor()
@@ -16,8 +16,8 @@ if __name__ == "__main__":
     '''
     print("\n")
     pr = PredictionTester('trace_files/trace_gcc.txt')
-    pr.local_2_bit_predictor()
-    pr.local_2_bit_predictor(address_size=10)
+    pr.local_predictor()
+    pr.local_predictor(address_size=10)
 
     print("\n")
     pr2 = PredictionTester('trace_files/trace.txt')
