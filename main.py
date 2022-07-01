@@ -3,11 +3,14 @@ from PredictionTester import PredictionTester
 if __name__ == "__main__":
 
 
-    pr = PredictionTester('trace_files/trace_jpeg.txt')
+    pr = PredictionTester('trace_files/trace.txt')
     
-    pr.two_level_global_predictor(ghr_size=2)
-    pr.gshare_predictor(ghr_size=2)
-    pr.tournament_predictor(ghr_size=2)
+    pr.local_2_bit_predictor()
+    pr.two_level_global_predictor()
+    pr.gshare_predictor()
+    pr.tournament_predictor()
+
+    pr.compare_predictors()                             # Compare all predictors that have been tested
 
 
     '''
